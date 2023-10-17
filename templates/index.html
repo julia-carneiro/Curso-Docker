@@ -4,14 +4,99 @@
     <title>Lista de Tarefas</title>
 </head>
 <body>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f3f3;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        margin-top: 20px;
+        font-size: 36px;
+    }
+
+    .input {
+        margin: 10px;
+        background-color: #87878751;
+        padding: 2%;
+        border-radius: 5px;
+        box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        text-align: center; /* Centraliza o texto dentro do formulário */
+    }
+
+    label {
+        display: block;
+        margin: 10px 0;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .submit {
+        background-color: #4e8f42;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    button.submit:hover {
+        background-color: #62b554;
+    }
+
+    ul {
+        list-style: none;
+        padding: 20px 0; /* Espaçamento na parte superior e inferior da lista */
+    }
+
+    li {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 20px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center; /* Centraliza verticalmente os elementos na lista */
+        transition: transform 0.2s;
+    }
+
+    .delete-button {
+        background-color: #d9534f;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .delete-button:hover {
+        transform: scale(1.1);
+        background-color: #c9302c;
+    }
+
+    </style>
     <h1>Lista de Tarefas</h1>
     
-    <form method="POST">
+    <form class="input" method="POST">
         <label for="title">Tarefa:</label>
         <input type="text" name="title" id="title" required>
         <label for="description">Descrição:</label>
         <input type="text" name="description" id="description">
-        <button type="submit">Adicionar Tarefa</button>
+        <button class="submit">Adicionar Tarefa</button>
     </form>
     
     <ul>
@@ -26,7 +111,6 @@
     </ul>
     
     <script>
-        // Adicione este código JavaScript para lidar com a exclusão de tarefas
         const deleteButtons = document.querySelectorAll(".delete-button");
         deleteButtons.forEach(button => {
             button.addEventListener("click", (event) => {
@@ -35,7 +119,7 @@
                 fetch(`/delete/${taskID}`, { method: "POST" })
                     .then(response => {
                         if (response.ok) {
-                            // Remova a tarefa da lista após a exclusão
+                            // Remove a tarefa da lista após a exclusão
                             const listItem = button.closest("li");
                             listItem.remove();
                         }
@@ -50,3 +134,4 @@
 
 </body>
 </html>
+

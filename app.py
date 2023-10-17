@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, request, render_template, redirect, url_for
 import pymongo
 from pymongo import MongoClient
@@ -7,16 +6,20 @@ from bson import ObjectId
 app = Flask(__name__)
 mongo_uri = "mongodb+srv://root:pass@cursocrawler.vybbjvd.mongodb.net/tasks"
 
+#Pega o BD baseada na URI fornecida acima - o ideal seria estar num .env 
 def get_db():
     client = MongoClient(mongo_uri)
     db = client['db_tasks']
     return db
 
+#Pega as tasks já adicionadas
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('index.html')
+    db = get_db()
+    tasks = list(db.tasks.find({}, {'_id': True, 'title': True, 'description': True}))
+    return render_template('index.html', tasks=tasks)
 
-# Rota para a página inicial
+#Adiciona tarefas ao banco
 @app.route('/', methods=['POST'])
 def index():
     if request.method == 'POST':
@@ -33,12 +36,9 @@ def index():
             }
             db.tasks.insert_one(task)
 
-    db = get_db()
-    tasks = list(db.tasks.find({}, {'_id': True, 'title': True, 'description': True}))
-    return render_template('index.html', tasks=tasks)
+    return redirect('/')
 
-
-
+#Remove tarefas do banco 
 @app.route('/delete/<string:task_id>', methods=['GET', 'POST'])
 def delete_task(task_id):
     db = get_db()
@@ -51,8 +51,6 @@ def delete_task(task_id):
         print(f"Tarefa com ID {task_id} não encontrada.")
 
     return redirect('/')
-
-
 
 if __name__ == '__main__':
     app.debug = True
