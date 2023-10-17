@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Tarefas</title>
+</head>
+<body>
+    <h1>Lista de Tarefas</h1>
+    
+    <form method="POST">
+        <label for="title">Tarefa:</label>
+        <input type="text" name="title" id="title" required>
+        <label for="description">Descrição:</label>
+        <input type="text" name="description" id="description">
+        <button type="submit">Adicionar Tarefa</button>
+    </form>
+    
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.title }} - {{ task.description }}
+                <form method="POST" action="{{ url_for('delete_task', task_id=task._id) }}">
+                    <button type="submit" class="delete-button" data-taskid="{{ task._id }}">Excluir</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <script>
+        // Adicione este código JavaScript para lidar com a exclusão de tarefas
+        const deleteButtons = document.querySelectorAll(".delete-button");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                const taskID = button.getAttribute("data-taskid");
+                fetch(`/delete/${taskID}`, { method: "POST" })
+                    .then(response => {
+                        if (response.ok) {
+                            // Remova a tarefa da lista após a exclusão
+                            const listItem = button.closest("li");
+                            listItem.remove();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro ao excluir a tarefa:", error);
+                    });
+            });
+        });
+    </script>
+
+
+</body>
+</html>
